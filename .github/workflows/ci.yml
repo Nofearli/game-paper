@@ -13,7 +13,12 @@ jobs:
         run: python scripts/citation_checker.py --check-library
       - name: Notation checker self-test
         run: |
-          printf 'The state $\|x\|$ evolves.\n' > /tmp/nt.tex
-          python scripts/notation_checker.py /tmp/nt.tex && exit 1 || [ $? -eq 1 ]
+          printf 'The state $\\|x\\|$ evolves.\n' > /tmp/nt.tex
+          if python scripts/notation_checker.py /tmp/nt.tex; then
+            echo "ERROR: expected the checker to detect the seeded violation"
+            exit 1
+          else
+            echo "notation checker correctly detected the violation"
+          fi
       - name: Indexer smoke test
         run: python scripts/paper_indexer.py --help

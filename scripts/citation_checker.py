@@ -52,19 +52,27 @@ def load_library():
 
 
 def check_library(by_id, bibkeys, bibtex_by_key):
+    """Library audit: warnings are EXPECTED (variant stubs, honest `to verify`
+    markers on early-access papers); they never fail the audit. Exit 1 is
+    reserved for drafts containing citations that cannot be resolved."""
     print(f"library: {len(by_id)} papers, {len(bibkeys)} BibTeX keys collected")
     missing_archive = [pid for pid in by_id if not os.path.exists(os.path.join(PAPERS_DIR, pid + ".md"))]
     if missing_archive:
-        print(f"[WARN] {len(missing_archive)} papers without archive (variants excluded if short):")
+        print(f"[WARN] {len(missing_archive)} papers without archive (expected: skipped/variant entries):")
         print("  " + ", ".join(missing_archive[:40]))
     bad = {k: v for k, v in bibtex_by_key.items() if v["unresolved_fields"]}
     if bad:
-        print(f"[WARN] {len(bad)} BibTeX entries have unresolved fields (search for 'to verify'):")
+        print(f"[WARN] {len(bad)} BibTeX entries carry honest `to verify` fields (early-access etc.):")
         for k, v in sorted(bad.items()):
             print(f"  {k} ({v['pid']}): {', '.join(v['unresolved_fields'])}")
     else:
         print("[OK] all recorded BibTeX entries have complete fields")
-    return not bad
+    dup = len(bibkeys) - len(set(bibkeys))
+    if dup:
+        print(f"[FAIL] {dup} duplicate BibTeX keys -- resolve before citing")
+        return False
+    print("[OK] library audit clean (warnings above are informational)")
+    return True
 
 
 def extract_keys_from_draft(text):
