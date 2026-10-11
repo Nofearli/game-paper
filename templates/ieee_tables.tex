@@ -1,0 +1,58 @@
+% ieee_tables.tex -- three-line (booktabs) table templates for IEEE Trans papers.
+% Preamble: \usepackage{booktabs}
+% Rules: no vertical rules; units in the header; consistent significant digits;
+% caption ABOVE the table; \label after \caption.
+
+% ---------- Table 1: notation / parameters ----------
+\begin{table}[!t]
+\centering
+\caption{Simulation Parameters}
+\label{tab:params}
+\begin{tabular}{lcc}
+\toprule
+Parameter & Symbol & Value \\
+\midrule
+Pursuer speed & $v_P$ & $1.0~\mathrm{m/s}$ \\
+Evader speed & $v_E$ & $0.7~\mathrm{m/s}$ \\
+Capture radius & $r_c$ & $0.15~\mathrm{m}$ \\
+Sensing radius & $r_s$ & $3.0~\mathrm{m}$ \\
+Integration step & $\Delta t$ & $0.01~\mathrm{s}$ \\
+Monte-Carlo runs & $N$ & $500$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---------- Table 2: method comparison ----------
+\begin{table}[!t]
+\centering
+\caption{Comparison With Existing Reach-Avoid Strategies}
+\label{tab:comparison}
+\begin{tabular}{lcccc}
+\toprule
+Method & Win region & Strategy type & Online cost & Info \\
+\midrule
+Apollonius-based~[P023] & closed form & feedback & $O(1)$ & positions \\
+HJI-based~[P058] & numerical & feedback & $O(N_x N_u)$ & full state \\
+Barrier-based~[P073] & analytic & feedback & $O(n)$ & local \\
+Proposed & analytic & feedback & $O(n)$ & local \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ---------- Table 3: ablation ----------
+\begin{table}[!t]
+\centering
+\caption{Ablation of the Proposed Modules (success rate over $500$ runs, $\%$)}
+\label{tab:ablation}
+\begin{tabular}{lccc}
+\toprule
+Variant & Success rate & Mean capture time [s] & Offline time [min] \\
+\midrule
+Full method & $96.2 \pm 0.8$ & $4.31$ & $12.4$ \\
+w/o re-assignment & $88.5 \pm 1.3$ & $5.02$ & $12.4$ \\
+w/o barrier check & $71.7 \pm 2.0$ & $6.10$ & $3.1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+% Numbers above are placeholders: replace with measured values; keep the
+% value +/- std convention for Monte-Carlo quantities.

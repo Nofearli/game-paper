@@ -1,0 +1,43 @@
+% algorithm.tex -- template for strategy/algorithm floats in IEEE Trans papers.
+% Packages required in the preamble:
+%   \usepackage{algorithm}
+%   \usepackage{algorithmic}   % or algpseudocode + algorithmicx (see note)
+% game-paper skill: every step using a theoretical result carries a \Comment
+% naming the equation/lemma; complexity is stated in the text after the float.
+\begin{algorithm}[t]
+\caption{Distributed Capture Assignment for Multiplayer Reach-Avoid Games}
+\label{alg:assignment}
+\begin{algorithmic}[1]
+\Require initial states $\mathbf{x}_i(0)$, $i \in \mathcal{P}$; evader set $\mathcal{E}$;
+         capture radius $r_c$; speeds $v_i$
+\Ensure assignment $\pi: \mathcal{P} \to \mathcal{E}$ and feedback strategy $\phi_i$
+\State $\pi \leftarrow$ initial matching via Apollonius dominance
+       \Comment{Sec.~IV-A; $\mathcal{C}_{PE}$ in (10)}
+\ForAll{$i \in \mathcal{P}$}
+    \State compute dominance boundary point
+           $\mathbf{b}_i = \arg\min_{\mathbf{x}\in\partial\mathcal{R}_i} \|\mathbf{x}-\mathbf{x}_{\pi(i)}\|_2$
+           \Comment{Lemma 2}
+    \State $\phi_i(\mathbf{x}) \leftarrow \frac{\mathbf{b}_i - \mathbf{x}_i}{\|\mathbf{b}_i - \mathbf{x}_i\|_2} v_i$
+           \Comment{Theorem 1: heading to boundary point}
+\EndFor
+\While{capture set not reached}
+    \State measure $\mathbf{x}(t_k)$
+           \Comment{information available under Assumption A2}
+    \If{evader $\pi(i)$ crosses $\partial\mathcal{R}_i$}
+        \State re-assign $\pi \leftarrow$ local swap
+               \Comment{Theorem 3: switching condition}
+    \EndIf
+    \State apply $\mathbf{u}_i = \phi_i(\mathbf{x}(t_k))$
+    \State $k \leftarrow k+1$
+\EndWhile
+\State \Return $\pi$, $\phi$
+\end{algorithmic}
+\end{algorithm}
+% Complexity note template (text after the float):
+% "The per-step cost of Algorithm 1 is O(N_P N_E) for the matching update and
+%  O(1) for each control computation, since each Apollonius center/radius in
+%  (10)-(11) is available in closed form."
+%
+% NOTE on environments: IEEE Trans accepts both `algorithmic` and
+% `algpseudocode`; use whichever the target journal's template ships with and
+% do not mix them. \State/\If/\While map to \State/\If{}...\EndIf/... in both.

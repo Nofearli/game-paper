@@ -1,0 +1,19 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pymupdf
+      - name: Library audit (citation integrity)
+        run: python scripts/citation_checker.py --check-library
+      - name: Notation checker self-test
+        run: |
+          printf 'The state $\|x\|$ evolves.\n' > /tmp/nt.tex
+          python scripts/notation_checker.py /tmp/nt.tex && exit 1 || [ $? -eq 1 ]
+      - name: Indexer smoke test
+        run: python scripts/paper_indexer.py --help
